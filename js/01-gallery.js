@@ -1,50 +1,27 @@
 import { galleryItems } from './gallery-items.js';
 // Change code below this line
-const galleryList = document.querySelector('.gallery');
+const galleryEl = document.querySelector('.gallery');
 
-const createGalleryMarkup = galleryItems
-  .map(({ preview, original, description }) =>
-      `<div class="gallery__item">
-      <a class="gallery__link" href="${original}">
-        <img
-          class="gallery__image"
-          src="${preview}"
-          data-source="${original}"
-          alt="${description}"
-        />
-      </a>
-    </div>`,
-  )
-  .join('');
+const addGalleryItems = galleryItems.map(({ preview, original, description }) => `<div class="gallery__item"><a class="gallery__link" href="${original}"><img class="gallery__image" src="${preview}" data-source="${original}" alt="${description}"/></a></div>`).join('');
 
+galleryEl.insertAdjacentHTML('beforeend', addGalleryItems);
+let instance;
 
-  galleryList.insertAdjacentHTML('beforeend', createGalleryMarkup);
+galleryEl.addEventListener('click', hendleOpenImage);
+function hendleOpenImage(e) {
+    e.preventDefault();
+    if (e.target.className !== 'gallery__image') { return; }
 
-  function onImageClick(evt) {
-    evt.preventDefault();
+    instance = basicLightbox.create(`<img src="${e.target.dataset.source}" width="1280" height="852">`, {
   
-  
-   if (evt.target.nodeName !== 'IMG') return;
-  
-   onOpenModal(evt.target.dataset.source);
+      onShow: () => { window.addEventListener('keydown', hendlecloseImage); },
+      onClose: () => { window.removeEventListener('keydown', hendlecloseImage); },
+  });
+  instance.show();
+}
+
+function hendlecloseImage(e) {
+  if (e.code === 'Escape') {
+      instance.close();
   }
-  galleryList.addEventListener('click', onImageClick);
-  
-  const onCreateModal = image =>
-    basicLightbox.create(`<img src = '${image}' width = '2100' alt = '${image}'>`);
-  
-  const onOpenModal = image => {
-    modalImage = onCreateModal(image);
-    modalImage.show();
-    console.log('Open modal');
-    document.addEventListener('keyup', onKeyPress);
-  };
-  
-  const onKeyPress = e => {
-    if (evt.code === 'Escape') modalImage.close();
-    console.log('Close modal with escape');
-    document.removeEventListener('keyup', onKeyPress);
-    console.log(evt);
-  };
-  
-//console.log(galleryItems);
+};
