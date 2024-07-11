@@ -32,7 +32,7 @@ const threeImages = images.slice(0, 3);
 const galleryElements = threeImages.map(({url, alt}) => `<li class="gallery-item">
     <img
       class="gallery-image"
-      src="${url}
+      src="${url}"
       alt="${alt}"
     />
 </li>`).join("");
